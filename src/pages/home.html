@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!--Import Google Icon Font-->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <!--Import materialize.css-->
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="../css/materialize.min.css"
+      media="screen,projection"
+    />
+    <link rel="stylesheet" href="../css/forms.css" />
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body class="home-container grey lighten-5">
+    <nav class="blue">
+      <div class="nav-wrapper">
+        <a href="#!" class="brand-logo logo-p">
+          <i class="material-icons">blur_on</i>
+          CaliWater</a
+        >
+        <a href="#" data-target="mobile-demo" class="sidenav-trigger"
+          ><i class="material-icons">menu</i></a
+        >
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+          <li class="">
+            <div id="bienvenida"></div>
+          </li>
+          <li class="logout-user">
+            <a href=""><i class="material-icons">exit_to_app</i></a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <ul class="sidenav" id="mobile-demo">
+      <li class="">
+        <a href=""><i class="material-icons">blur_on</i>CaliWater</a>
+      </li>
+      <li class="logout-user">
+        <a href="" class=""><i class="material-icons">exit_to_app</i></a>
+      </li>
+    </ul>
+
+    <div class="container">
+      <div class="card white hoverable">
+        <div class="card-content">
+          <div class="row section">
+            <div class="input-field col s12 m4">
+              <select id="select-zona">
+                <option value="0" disabled selected>Zona</option>
+                <option value="1">Zona 1</option>
+                <option value="2">Zona 2</option>
+                <option value="3">Zona 3</option>
+              </select>
+            </div>
+            <div class="input-field col s12 m4">
+              <select id="select-dato">
+                <option value="" disabled selected>Tipo de dato</option>
+                <option value="caudal">Caudal</option>
+                <option value="turbidez">Turbidez</option>
+                <option value="presion">Presión</option>
+                <option value="consumo">Consumo</option>
+              </select>
+            </div>
+            <div class="input-field col s12 m4">
+              <select id="select-periodo">
+                <option value="" disabled selected>Periodo</option>
+                <option value="hoy">Hoy</option>
+                <option value="semana">Esta semana</option>
+                <option value="mes">Este mes</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-field col s12 m4">
+              <div class="switch section">
+                <label>
+                  Buscar por rangos:
+                  <input type="checkbox" id="byRange-checkbox" />
+                  <span class="lever"></span>
+                </label>
+              </div>
+              <a class="waves-effect waves-light btn" id="graficar-btn"
+                ><i class="material-icons right">timeline</i>graficar</a
+              >
+            </div>
+            <div class="input-field col s12 m4">
+              <input
+                type="text"
+                class="datepicker"
+                id="fecha-inicial"
+                disabled
+              />
+              <label>fecha inicial</label>
+            </div>
+            <div class="input-field col s12 m4">
+              <input type="text" class="datepicker" id="fecha-final" disabled />
+              <label>fecha final</label>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="row">
+            <div class="col s12">
+              <div id="chart-container"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="../functions/userVerification.js"></script>
+    <!--JavaScript at end of body for optimized loading-->
+    <script type="text/javascript" src="../js/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@1.27.0/build/global/luxon.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.3.0/chart.min.js"
+      integrity="sha512-yadYcDSJyQExcKhjKSQOkBKy2BLDoW6WnnGXCAkCoRlpHGpYuVuBqGObf3g/TdB86sSbss1AOP4YlGSb6EKQPg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.0.0/chartjs-plugin-zoom.min.js"
+      integrity="sha512-IhRtzxlPU7PMu47R132Y5BYVZCCuHNcds+Q3Wg2iL11J+fda93ugoQwy+LR2d68l2AudqQsAGhgXbGxSzKS9gA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="../functions/storage/localstorage.js"></script>
+    <script src="../functions/request/requests.js"></script>
+    <script src="../functions/homefunctions.js"></script>
+  </body>
+</html>

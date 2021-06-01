@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!--Import Google Icon Font-->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <!--Import materialize.css-->
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="../css/materialize.min.css"
+      media="screen,projection"
+    />
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/forms.css" />
+    <title>Document</title>
+  </head>
+  <body class="water-bg">
+    <div class="container">
+      <div class="row">
+        <div class="col m2 l2 xl3"></div>
+        <div class="col m8 l8  xl6 white card hoverable">
+          <div class="card-content">
+            <div class="titulo center-align">
+              <i class="medium material-icons">blur_on</i>
+              <h3>CaliWater</h3>
+            </div>
+            <div class="cuerpo section">
+              <h6>Inicio de sesión</h6>
+              <form action="" id="login-user" class="">
+                  <div class="input-field">
+                    <i class="material-icons prefix">account_circle</i>
+                    <input
+                      type="text"
+                      name="user"
+                      class="validate"
+                      id="user-login"
+                    />
+                    <label for="user-login">Usuario</label>
+                  </div>
+                  <div class="input-field">
+                    <i class="material-icons prefix">fingerprint</i>
+                    <input
+                      class="validate"
+                      type="password"
+                      name="password"
+                      id="password-login"
+                    />
+                    <label for="password-login">Contraseña</label>
+                  </div>
+                  <div class="input-field">
+                    <button
+                      class="btn waves-effect waves-light full-width-btn"
+                      type="submit"
+                      id=""
+                    >
+                      Ingresar
+                    </button>
+                  </div>
+              </form>
+            </div>
+            <div class="card-action center-align section">
+              <span
+                >No tienes cuenta?
+                <a href="registro.html" class="blue-text"
+                  >Registrate aquí.</a
+                ></span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col m2 l2 xl3"></div>
+      </div>
+    </div>
+
+    <script src="../functions/storage/localstorage.js"></script>
+    <script src="../functions/userVerification.js"></script>
+    <script src="../functions/request/requests.js"></script>
+    <script src="../functions/indexfunctions.js"></script>
+    <!--JavaScript at end of body for optimized loading-->
+    <script type="text/javascript" src="../js/materialize.min.js"></script>
+  </body>
+</html>
