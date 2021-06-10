@@ -18,43 +18,63 @@
     <link rel="stylesheet" href="../css/forms.css" />
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Home</title>
   </head>
   <body class="home-container grey lighten-5">
-    <nav class="blue">
-      <div class="nav-wrapper">
-        <a href="#!" class="brand-logo logo-p">
-          <i class="material-icons">blur_on</i>
-          CaliWater</a
-        >
-        <a href="#" data-target="mobile-demo" class="sidenav-trigger"
-          ><i class="material-icons">menu</i></a
-        >
-        <ul id="nav-mobile" class="right hide-on-med-and-down">
-          <li class="">
-            <div id="bienvenida"></div>
-          </li>
-          <li class="logout-user">
-            <a href=""><i class="material-icons">exit_to_app</i></a>
-          </li>
-        </ul>
+    <header>
+      <div class="navbar-fixed">
+        <nav class="blue">
+          <div class="nav-wrapper">
+            <a href="#!" class="brand-logo logo-p right">
+              <i class="material-icons">blur_on</i>
+              CaliWater</a
+            >
+            <a
+              href="#"
+              data-target="slide-out"
+              class="sidenav-trigger hide-on-large-only"
+              ><i class="material-icons">menu</i></a
+            >
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+              <li class="">
+                <div id="bienvenida"></div>
+              </li>
+              <!-- <li class="logout-user">
+                <a href=""><i class="material-icons">exit_to_app</i></a>
+              </li> -->
+            </ul>
+          </div>
+        </nav>
       </div>
-    </nav>
 
-    <ul class="sidenav" id="mobile-demo">
-      <li class="">
-        <a href=""><i class="material-icons">blur_on</i>CaliWater</a>
-      </li>
-      <li class="logout-user">
-        <a href="" class=""><i class="material-icons">exit_to_app</i></a>
-      </li>
-    </ul>
-
-    <div class="container">
-      <div class="card white hoverable">
-        <div class="card-content">
-          <div class="row section">
-            <div class="input-field col s12 m4">
+      <ul id="slide-out" class="sidenav sidenav-fixed flex-direction-column">
+        <li>
+          <div class="user-view">
+            <div class="background">
+              <img src="../img/water-background.jpg" />
+            </div>
+            <a href="https://github.com/Kevin-RB"
+              ><img class="circle" src="../img/nutria.jpg"
+            /></a>
+            <a href="#name"
+              ><span class="white-text name" id="user-profile-name"></span
+            ></a>
+            <a href="#email"
+              ><span class="white-text email" id="user-profile-email"></span
+            ></a>
+          </div>
+        </li>
+        <li>
+          <a href="./alertas.html" class="waves-effect waves-teal"
+            ><i class="material-icons">notifications_active</i
+            >Alertas</a
+          >
+        </li>
+        <div class="divider"></div>
+        <li><a class="subheader">Filtros</a></li>
+        <div class="section">
+          <li>
+            <div class="nav-padding select-nav-bottom-margi">
               <select id="select-zona">
                 <option value="0" disabled selected>Zona</option>
                 <option value="1">Zona 1</option>
@@ -62,7 +82,9 @@
                 <option value="3">Zona 3</option>
               </select>
             </div>
-            <div class="input-field col s12 m4">
+          </li>
+          <li>
+            <div class="nav-padding select-nav-bottom-margi">
               <select id="select-dato">
                 <option value="" disabled selected>Tipo de dato</option>
                 <option value="caudal">Caudal</option>
@@ -71,7 +93,9 @@
                 <option value="consumo">Consumo</option>
               </select>
             </div>
-            <div class="input-field col s12 m4">
+          </li>
+          <li>
+            <div class="nav-padding select-nav-bottom-margi">
               <select id="select-periodo">
                 <option value="" disabled selected>Periodo</option>
                 <option value="hoy">Hoy</option>
@@ -79,53 +103,156 @@
                 <option value="mes">Este mes</option>
               </select>
             </div>
-          </div>
-          <div class="row">
-            <div class="input-field col s12 m4">
-              <div class="switch section">
-                <label>
-                  Buscar por rangos:
-                  <input type="checkbox" id="byRange-checkbox" />
-                  <span class="lever"></span>
-                </label>
-              </div>
-              <a class="waves-effect waves-light btn" id="graficar-btn"
-                ><i class="material-icons right">timeline</i>graficar</a
-              >
+          </li>
+        </div>
+        <li><div class="divider"></div></li>
+        <div class="section">
+          <li>
+            <div class="switch nav-padding">
+              <label>
+                Buscar por rangos:
+                <input type="checkbox" id="byRange-checkbox" />
+                <span class="lever"></span>
+              </label>
             </div>
-            <div class="input-field col s12 m4">
+          </li>
+          <li>
+            <div class="input-field nav-padding inputfield-margin-override">
               <input
                 type="text"
                 class="datepicker"
                 id="fecha-inicial"
                 disabled
               />
-              <label>fecha inicial</label>
+              <label for="fecha-inicial" class="datepicker-label"
+                >fecha inicial</label
+              >
             </div>
-            <div class="input-field col s12 m4">
+          </li>
+          <li>
+            <div class="input-field nav-padding inputfield-margin-override">
               <input type="text" class="datepicker" id="fecha-final" disabled />
-              <label>fecha final</label>
+              <label for="fecha-final" class="datepicker-label"
+                >fecha final</label
+              >
+            </div>
+          </li>
+        </div>
+        <div class="divider"></div>
+        <div class="section">
+          <li>
+            <a class="waves-effect waves-light btn" id="graficar-btn"
+              ><i class="material-icons right white-text">timeline</i
+              >Consultar</a
+            >
+          </li>
+        </div>
+        <div class="section flex-grow-logout">
+          <li class="logout-user">
+            <a href="" class="waves-effect waves-teal"
+              ><i class="material-icons">exit_to_app</i>Cerrar sesión</a
+            >
+          </li>
+        </div>
+      </ul>
+    </header>
+
+    <main class="cont-padding-sidenav">
+      <div class="container">
+        <div class="row">
+          <h4 id="titulo-cards-promedios" class="grey-text darken-1"></h4>
+        </div>
+        <div class="row section">
+          <div class="col s6 m6 l6 xl3">
+            <div class="card">
+              <div class="card-image">
+                <img src="../img/presion.jpg" />
+                <span class="card-title">Presión</span>
+              </div>
+              <div class="card-content hide">
+                <h4
+                  id="presion-latest-data"
+                  class="center-align latest-data teal-text"
+                ></h4>
+              </div>
             </div>
           </div>
-          <div class="divider"></div>
+          <div class="col s6 m6 l6 xl3">
+            <div class="card">
+              <div class="card-image">
+                <img src="../img/turbidez.jpg" />
+                <span class="card-title">Turbidez</span>
+              </div>
+              <div class="card-content hide">
+                <h4
+                  id="turbidez-latest-data"
+                  class="center-align latest-data teal-text"
+                ></h4>
+              </div>
+            </div>
+          </div>
+          <div class="col s6 m6 l6 xl3">
+            <div class="card">
+              <div class="card-image">
+                <img src="../img/caudal.jpg" />
+                <span class="card-title">Caudal</span>
+              </div>
+              <div class="card-content hide">
+                <h4
+                  id="caudal-latest-data"
+                  class="center-align latest-data teal-text"
+                ></h4>
+              </div>
+            </div>
+          </div>
+          <div class="col s6 m6 l6 xl3">
+            <div class="card">
+              <div class="card-image">
+                <img src="../img/consumo.jpg" />
+                <span class="card-title">Consumo</span>
+              </div>
+              <div class="card-content hide">
+                <h4
+                  id="consumo-latest-data"
+                  class="center-align latest-data teal-text"
+                ></h4>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card white hoverable">
           <div class="row">
-            <div class="col s12">
-              <div id="chart-container"></div>
+            <div class="col s12 center-align">
+              <h4>Sección de gráficos</h4>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="row">
+              <div class="col s12">
+                <div id="chart-container-bynodes"></div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col s12">
+                <div id="chart-container-averages"></div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </main>
+
     <script src="../functions/userVerification.js"></script>
     <!--JavaScript at end of body for optimized loading-->
     <script type="text/javascript" src="../js/materialize.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/luxon@1.27.0/build/global/luxon.min.js"></script>
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.3.0/chart.min.js"
       integrity="sha512-yadYcDSJyQExcKhjKSQOkBKy2BLDoW6WnnGXCAkCoRlpHGpYuVuBqGObf3g/TdB86sSbss1AOP4YlGSb6EKQPg=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@1.27.0/build/global/luxon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@0.2.1"></script>
     <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.0.0/chartjs-plugin-zoom.min.js"
@@ -136,5 +263,7 @@
     <script src="../functions/storage/localstorage.js"></script>
     <script src="../functions/request/requests.js"></script>
     <script src="../functions/homefunctions.js"></script>
+
+
   </body>
 </html>

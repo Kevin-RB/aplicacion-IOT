@@ -4,7 +4,13 @@ document.addEventListener('DOMContentLoaded', () => {
     select_Initialization()
     sidenav_Initialization()
     datepicker_Initialization()
-});
+    latestData()
+})
+
+const loadData = async (string) => {
+    const url = `//localhost:3000${string}`
+    return await requestData(url)
+}
 
 const filters = {
     byRange: false,
@@ -19,10 +25,18 @@ const filters = {
 
 let kappaString = ''
 const userName = sessionStorage.user
-const bienvenida = document.querySelector('#bienvenida')
-bienvenida.innerHTML = `Bienvenido ${userName}`
 
+//////DISPLAY USER DATA ON SIDENAV
+const userProfileName = document.querySelector('#user-profile-name')
+const userProfileEmail = document.querySelector('#user-profile-email')
+//////Set user data
+userProfileName.innerHTML = userName
+userProfileEmail.innerHTML = `${userName}@gmail.com`
+
+
+/////////LOGOUT FUNCTIONS    
 const logouts = document.querySelectorAll('.logout-user')
+
 logouts.forEach(element => {
     element.addEventListener('click', (e) => {
         logout()
@@ -50,7 +64,6 @@ document.querySelector('#byRange-checkbox').addEventListener('change', (e) => {
     }
     datepicker_Initialization()
     select_Initialization()
-    console.log(e.target.checked)
 })
 
 //////////////MATERIALIZE INITIALIZATION
@@ -65,12 +78,14 @@ const sidenav_Initialization = () => {
 }
 
 const datepicker_Initialization = () => {
+    let container = document.querySelector('main')
     let elems = document.querySelectorAll('.datepicker');
     let options = {
         autoClose: true,
         format: 'dd/mm/yyyy',
         showMonthAfterYear: false,
         showClearBtn: true,
+        container: container,
         parse: function () { }
     }
     M.Datepicker.init(elems, options);
@@ -113,6 +128,7 @@ const dateFromServerToHuman = (date) => {
 
 ////////////REQUEST DATA PROCESSING
 
+///////////////////CHART FUNCTION
 document.querySelector('#graficar-btn').addEventListener('click', () => {
     const zona = parseInt(document.querySelector('#select-zona').value)
     const dato = document.querySelector('#select-dato').value
@@ -128,11 +144,15 @@ document.querySelector('#graficar-btn').addEventListener('click', () => {
         filters.rango.inicial = parseDateValueinISO(document.querySelector('#fecha-inicial').value).toISO()
         filters.rango.final = parseDateValueinISO(document.querySelector('#fecha-final').value).endOf('day').toISO()
     }
-    console.log(filters)
-    initializeChart(filters)
+    latestData()
+    initializeCharts(filters)
 })
 
-const initializeChart = async (filters) => {
+const getRandomInt = (min, max) => {
+    return Math.floor(Math.random() * (max - min)) + min;
+}
+
+const initializeCharts = async (filters) => {
     if (filters.zona === 0 || filters.dato === '' || filters.periodo === '') { return }
     const requestPeriodo = {
         hoy: '/datos-hoy-zona/',
@@ -146,78 +166,178 @@ const initializeChart = async (filters) => {
         url += `/${filters.rango.inicial}/${filters.rango.final}`
     }
 
-    const resolvedData = await loadData(url)
-    console.log(url)
-    console.log(resolvedData)
-    const chartLabels = getLabels(resolvedData)
-    const chartData = getData(resolvedData, filters.dato)
-    const title = `Datos por ${filters.periodo} , zona: ${filters.zona}`
-    createChart({
-        chartLabels: chartLabels,
-        chartData: chartData,
-        title: title,
-        yAxisTitle: filters.dato
-    })
-}
-
-const loadData = async (string) => {
-    const url = `//localhost:3000${string}`
-    return await requestData(url)
-}
-
-const getLabels = (data) => {
-    const array = []
-    data.forEach((element) => {
-        const humanDate = dateFromServerToHuman(element.datos.horaFecha)
-        array.push(humanDate)
-    })
-    return array
-}
-
-const getData = (data, parametro) => {
-    const array = []
-    data.forEach((element) => {
-        array.push(element.datos[parametro])
-    })
-    return array
-}
-/////////CHART.JS CONFIG
-
-const createChart = ({ chartLabels, chartData, title, yAxisTitle }) => {
-
     const zoomOptions = {
-        limits: {
-            x: { min: 0, max: 500, minRange: 5 },
-            y: { min: -100, max: 500, minRange: 5 }
-        },
-        pan: {
-            enabled: true,
-            mode: 'xy',
-        },
         zoom: {
             wheel: {
                 enabled: true,
             },
             pinch: {
-                enabled: true
+                enabled: true,
             },
+            mode: 'xy',
+        },
+        pan: {
+            enabled: true,
             mode: 'xy',
         }
     }
-    const data = {
-        labels: chartLabels,
-        datasets: [{
-            label: title,
-            backgroundColor: 'rgb(255, 99, 132)',
-            borderColor: 'rgb(255, 99, 132)',
-            data: chartData,
+
+    const resolvedData = await loadData(url)
+    const nodeDataSet = NodesChartDataset({ resolvedData })
+    const averageDataSet = averagesChartDataSet({ resolvedData })
+
+    createChartByNode({
+        fullDataSet: nodeDataSet,
+        title: `${filters.dato} por nodos de zona`,
+        yAxisTitle: filters.dato,
+        zoomOptions
+    })
+
+    createAveragesChart({
+        fullDataSet: averageDataSet,
+        title: `${filters.dato} promedio por zona`,
+        yAxisTitle: filters.dato,
+        zoomOptions
+    })
+}
+
+const NodesChartDataset = ({ resolvedData }) => {
+    //////////CREATE A DATASET FOR EACH NODE
+    const fullDataSet = []
+    ///////////////// CREATE AN ARRAY WITH ALL AVAILABLE NODE IDS
+    const nodeIds = []
+    resolvedData.forEach(element => {
+        const id = element.id
+        !nodeIds.includes(id) ? nodeIds.push(id) : null
+    })
+    nodeIds.forEach(node => {
+        const dataSet = {
+            label: `Nodo id:${node}`,
+            backgroundColor: `rgb(${getRandomInt(0, 255)}, ${getRandomInt(0, 255)}, ${getRandomInt(0, 255)})`,
+            borderColor: `rgb(${getRandomInt(0, 255)}, ${getRandomInt(0, 255)}, ${getRandomInt(0, 255)})`,
+            data: null,
             tension: 0.0
-        }]
-    };
+        }
+        const nodeArray = resolvedData.filter(object => object.id === node)
+        dataSet.data = nodeArray.map(element => ({ x: element.datos.horaFecha, y: element.datos[filters.dato], id: element.id }))
+        fullDataSet.push(dataSet)
+    })
+    return fullDataSet
+}
+
+const averagesChartDataSet = ({ resolvedData }) => {
+    const averages = averageByDay(resolvedData)
+    const dataSet = {
+        label: `Promedios`,
+        backgroundColor: 'rgb(255, 99, 132)',
+        borderColor: 'rgb(255, 99, 132)',
+        data: null,
+        tension: 0.0
+    }
+    dataSet.data = averages.map(element => ({ x: element.horaFecha, y: element[filters.dato] }))
+    const array = []
+    array.push(dataSet)
+    return array
+}
+
+///////////////////AVERAGE DATA BY DAY
+const averageByDay = (dataSet) => {
+    const arraysByDay = []
+    const averages = []
+    const days = []
+    dataSet.forEach(element => {
+        const day = DateTime.fromISO(element.datos.horaFecha).startOf('day').toISO()
+        !days.includes(day) ? days.push(day) : null
+        element.datos.horaFecha = DateTime.fromISO(element.datos.horaFecha)
+    })
+    days.forEach(day => {
+        let dayStart = DateTime.fromISO(day).startOf('day')
+        let dayEnd = DateTime.fromISO(day).endOf('day')
+        const avarageArray = dataSet.filter(object => {
+            const objectDate = object.datos.horaFecha
+            return objectDate >= dayStart && objectDate <= dayEnd
+        })
+        arraysByDay.push(avarageArray)
+    })
+    arraysByDay.forEach(dayArray => {
+        const data = {
+            caudal: null,
+            consumo: null,
+            presion: null,
+            turbidez: null,
+            horaFecha: ''
+        }
+        dayArray.forEach(element => {
+            data.caudal += element.datos.caudal
+            data.consumo += element.datos.consumo
+            data.presion += element.datos.presion
+            data.turbidez += element.datos.turbidez
+        })
+        data.caudal = data.caudal / dayArray.length
+        data.consumo = data.consumo / dayArray.length
+        data.presion = data.presion / dayArray.length
+        data.turbidez = data.turbidez / dayArray.length
+        data.horaFecha = dayArray[0].datos.horaFecha.endOf('day').toISO()
+        averages.push(data)
+    })
+    return averages
+}
+
+////////////////////LATEST DATA FUNCTIONS
+const latestData = async () => {
+    const tituloPromedios = document.querySelector('#titulo-cards-promedios')
+    const data = await loadData(`/datos-hoy-zona/${filters.zona}`)
+    const dayAverages = averageByDay(data)
+    if (filters.zona === 0 || data.length === 0) {
+        tituloPromedios.innerHTML = `Seleccione una zona`
+        return
+    } else {
+        tituloPromedios.innerHTML = `Promedio del día (zona: ${filters.zona})`
+    }
+    //////////create new array from data object
+    const array = Object.keys(data[0].datos).map(key => ({ name: key }))
+    const units = {
+        'presion': 'PSI',
+        'turbidez': 'NTU',
+        'caudal': 'L/S',
+        'consumo': 'L',
+    }
+    /////////fill the DOM elements with the new array data
+    array.forEach(element => {
+        if (element.name === 'horaFecha') { return }
+        const latestDataCard = document.querySelector(`#${element.name}-latest-data`)
+        const parent = latestDataCard.parentNode
+        const isParentHidden = parent.className.includes('hide')
+        if (isParentHidden) {
+            parent.classList.remove('hide')
+        }
+        let value = dayAverages[0][element.name]
+        value = value.toFixed(2)
+        const unit = units[element.name]
+        latestDataCard.innerHTML = `${value} ${unit}`
+    })
+}
+
+/////////CHART.JS CONFIG
+const createChartByNode = ({ title, yAxisTitle, fullDataSet, zoomOptions }) => {
+    const data = {
+        datasets: fullDataSet
+    }
+
     const config = {
         type: 'line',
         data,
         options: {
+            plugins: {
+                zoom: zoomOptions,
+                // tooltip: {
+                //     callbacks: {
+                //         footer: function (context) {
+                //             return `id: ${context[0].raw.id}`
+                //         },
+                //     }
+                // }
+            },
             responsive: true,
             interaction: {
                 intersect: false,
@@ -225,13 +345,24 @@ const createChart = ({ chartLabels, chartData, title, yAxisTitle }) => {
             },
             scales: {
                 x: {
-                    display: true,
+                    type: 'time',
+                    ticks: {
+                        autoSkip: true,
+                        autoSkipPadding: 50,
+                        maxRotation: 0
+                    },
+                    time: {
+                        displayFormats: {
+                            hour: 'HH:mm',
+                            minute: 'HH:mm',
+                            second: 'HH:mm:ss'
+                        }
+                    },
                     title: {
                         display: true,
                         text: 'Tiempo',
                         color: '#2196f3',
                         font: {
-                            // family: 'Comic Sans MS',
                             size: 20,
                             weight: 'bold',
                             lineHeight: 1.2,
@@ -254,18 +385,108 @@ const createChart = ({ chartLabels, chartData, title, yAxisTitle }) => {
                         padding: { top: 20, left: 0, right: 0, bottom: 0 }
                     }
                 }
-            },
-            plugins: {
-                zoom: zoomOptions
             }
         }
-    };
+    }
 
-    let chartContainer = document.querySelector('#chart-container')
-    let hasChild = chartContainer.firstElementChild
-    if (hasChild !== null) { chartContainer.firstElementChild.remove() }
+    let chartContainer = document.querySelector('#chart-container-bynodes')
+    chartContainer.innerHTML = ''
+    const divider = document.createElement('div')
+    divider.setAttribute('class', 'divider')
+    const h5 = document.createElement('h5')
+    h5.innerHTML = title
     const canvas = document.createElement('canvas')
-    canvas.setAttribute('id', 'myChart')
+    canvas.setAttribute('id', 'nodesChart')
+    ///////////APPEND CHILD NODES TO CHART CONTAINER
+    chartContainer.appendChild(h5)
+    chartContainer.appendChild(divider)
     chartContainer.appendChild(canvas)
-    new Chart(document.getElementById('myChart'), config)
+    //////////INITIALIZE CHART ON GIVEN CONTAINER BY ID
+    new Chart(document.getElementById('nodesChart'), config)
+}
+
+const createAveragesChart = ({ title, yAxisTitle, fullDataSet, zoomOptions }) => {
+    const data = {
+        datasets: fullDataSet
+    }
+
+    const config = {
+        type: 'line',
+        data,
+        options: {
+            plugins: {
+                zoom: zoomOptions,
+                // tooltip: {
+                //     callbacks: {
+                //         footer: function (context) {
+                //             return `id: ${context[0].raw.id}`
+                //         },
+                //     }
+                // }
+            },
+            responsive: true,
+            interaction: {
+                intersect: false,
+                mode: 'nearest',
+            },
+            scales: {
+                x: {
+                    type: 'time',
+                    ticks: {
+                        autoSkip: true,
+                        autoSkipPadding: 50,
+                        maxRotation: 0
+                    },
+                    time: {
+                        displayFormats: {
+                            hour: 'HH:mm',
+                            minute: 'HH:mm',
+                            second: 'HH:mm:ss'
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Tiempo',
+                        color: '#2196f3',
+                        font: {
+                            size: 20,
+                            weight: 'bold',
+                            lineHeight: 1.2,
+                        },
+                        padding: { top: 20, left: 0, right: 0, bottom: 0 }
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: yAxisTitle,
+                        color: '#2196f3',
+                        font: {
+                            // family: 'Times',
+                            size: 20,
+                            weight: 'bold',
+                            lineHeight: 1.2
+                        },
+                        padding: { top: 20, left: 0, right: 0, bottom: 0 }
+                    }
+                }
+            }
+        }
+    }
+
+    let chartContainer = document.querySelector('#chart-container-averages')
+    chartContainer.innerHTML = ''
+    const divider = document.createElement('div')
+    divider.setAttribute('class', 'divider')
+    const h5 = document.createElement('h5')
+    h5.innerHTML = title
+    const canvas = document.createElement('canvas')
+    canvas.setAttribute('id', 'averageChart')
+    ///////////APPEND CHILD NODES TO CHART CONTAINER
+    chartContainer.appendChild(h5)
+    chartContainer.appendChild(divider)
+    chartContainer.appendChild(canvas)
+    //////////INITIALIZE CHART ON GIVEN CONTAINER BY ID
+    new Chart(document.getElementById('averageChart'), config)
 }

@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
+
+html, input{
+  font-family: 'Roboto', sans-serif;
+}
+
 .water-bg {
   display: flex;
   height: 100vh;
@@ -12,14 +18,59 @@
   background-size: cover;
 }
 
-.full-width-btn{
-    width: 100%;
+.full-width-btn {
+  width: 100%;
 }
 
-#bienvenida{
+#bienvenida {
   padding: 0px 15px;
 }
 
-#chart-container{
+#chart-container {
   position: relative;
+}
+
+.cont-padding-sidenav {
+  padding-left: 300px;
+}
+
+.nav-padding{
+  padding-left: 32px;
+  padding-right: 32px;
+}
+
+.select-nav-bottom-margin{
+  margin-bottom: 20px;
+}
+
+.inputfield-margin-override{
+  margin-top: 0px;
+  margin-bottom: 10px;
+}
+
+.datepicker-label{
+  padding-left: 32px;
+}
+
+.flex-direction-column{
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-grow-logout{
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+}
+
+.latest-data{
+  font-weight: 300;
+  margin: 0rem 0rem;
+}
+
+@media only screen and (max-width: 992px) {
+  .cont-padding-sidenav {
+    padding-left: 0;
+  }
 }
