@@ -1,4 +1,3 @@
 [build]
   base    = "src"
   publish = "src/pages/"
-  command = "your build command"
