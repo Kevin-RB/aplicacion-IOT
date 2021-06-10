@@ -1,3 +1,9 @@
+document.addEventListener('DOMContentLoaded', () => {
+    select_Initialization()
+    sidenav_Initialization()
+    datepicker_Initialization()
+})
+
 document.querySelector('#consultar-btn').addEventListener('click', () => {
     const zona = parseInt(document.querySelector('#select-zona').value)
     const periodo = document.querySelector('#select-periodo').value
@@ -27,7 +33,6 @@ const createTable = async () => {
     if (filters.byRange) {
         url += `/${filters.rango.inicial}/${filters.rango.final}`
     }
-
     const dataSet = await loadData(url)
     dataSet.reverse()
     const contentTable = document.querySelector('#content-table')
@@ -59,20 +64,9 @@ const createTable = async () => {
         const dataKeys = Object.keys(element.alertas)
         dataKeys.forEach((key) => {
             if (element.alertas[key] === null) {
+                return
             } else {
                 tdAlertas.innerHTML += `${element.alertas[key]}<br>`
-            }
-            if (tdAlertas.childElementCount >= 2) {
-                const alertas = tdAlertas.innerHTML.split('<br>')
-                debugger
-                alertas.pop()
-                tdAlertas.innerHTML = ''
-                alertas.forEach(alerta => {
-                    tdAlertas.innerHTML += `${alerta},<br>`
-                })
-                const slicedString = tdAlertas.innerHTML.slice(0, -5)
-                tdAlertas.innerHTML = slicedString
-                debugger
             }
         })
         tableRow.appendChild(tdId)

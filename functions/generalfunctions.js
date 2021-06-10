@@ -1,12 +1,5 @@
 isUserLogged()
 
-document.addEventListener('DOMContentLoaded', () => {
-    select_Initialization()
-    sidenav_Initialization()
-    datepicker_Initialization()
-    latestData()
-})
-
 const loadData = async (string) => {
     const url = `//localhost:3000${string}`
     return await requestData(url)
@@ -127,26 +120,6 @@ const dateFromServerToHuman = (date) => {
 }
 
 ////////////REQUEST DATA PROCESSING
-
-///////////////////CHART FUNCTION
-document.querySelector('#graficar-btn').addEventListener('click', () => {
-    const zona = parseInt(document.querySelector('#select-zona').value)
-    const dato = document.querySelector('#select-dato').value
-    const periodo = document.querySelector('#select-periodo').value
-    const isByRange = document.querySelector('#byRange-checkbox').checked
-    filters.zona = zona
-    filters.dato = dato
-    filters.periodo = periodo
-    filters.byRange = isByRange
-
-    if (filters.byRange === true) {
-        filters.periodo = 'rango'
-        filters.rango.inicial = parseDateValueinISO(document.querySelector('#fecha-inicial').value).toISO()
-        filters.rango.final = parseDateValueinISO(document.querySelector('#fecha-final').value).endOf('day').toISO()
-    }
-    latestData()
-    initializeCharts(filters)
-})
 
 const getRandomInt = (min, max) => {
     return Math.floor(Math.random() * (max - min)) + min;
@@ -286,14 +259,18 @@ const averageByDay = (dataSet) => {
 ////////////////////LATEST DATA FUNCTIONS
 const latestData = async () => {
     const tituloPromedios = document.querySelector('#titulo-cards-promedios')
-    const data = await loadData(`/datos-hoy-zona/${filters.zona}`)
-    const dayAverages = averageByDay(data)
-    if (filters.zona === 0 || data.length === 0) {
+    if (filters.zona === 0) {
         tituloPromedios.innerHTML = `Seleccione una zona`
         return
     } else {
         tituloPromedios.innerHTML = `Promedio del día (zona: ${filters.zona})`
     }
+    const data = await loadData(`/datos-hoy-zona/${filters.zona}`)
+    if(data.length === 0){
+        tituloPromedios.innerHTML = `No hay datos hoy en (zona: ${filters.zona})`
+        return
+    }
+    const dayAverages = averageByDay(data)
     //////////create new array from data object
     const array = Object.keys(data[0].datos).map(key => ({ name: key }))
     const units = {
